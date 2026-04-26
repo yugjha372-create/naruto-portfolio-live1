@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <div id="out"></div>
+    <script>
+        const vids = [
+            'Comp 1_5_1.mp4',
+            'raw edit_1_1.mp4',
+            'raw vsl edit_1.mp4',
+            'vsl practise long _2.mp4'
+        ];
+        
+        async function check() {
+            let out = document.getElementById('out');
+            for (let v of vids) {
+                let video = document.createElement('video');
+                video.src = '../my works/' + v;
+                await new Promise(r => {
+                    video.onloadedmetadata = r;
+                    video.onerror = r;
+                });
+                out.innerHTML += `<p>${v}: ${video.videoWidth}x${video.videoHeight}</p>`;
+            }
+            out.innerHTML += `<p id="done">DONE</p>`;
+        }
+        check();
+    </script>
+</body>
+</html>

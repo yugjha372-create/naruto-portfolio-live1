@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yug | Video Editor & Motion Graphics</title>
+    <meta name="description" content="Yug - Video Editor. Your vision, edited to perfection—built to grab attention and convert.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Background Video -->
+    <div class="video-container">
+        <video src="assets/bg.mp4" autoplay loop muted playsinline class="bg-video"></video>
+        <div class="overlay-gradient glass-overlay"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar glass">
+        <div class="logo">Yug<span class="red-dot">.</span>fx</div>
+        <div class="nav-links">
+            <a href="#work">Work</a>
+            <a href="services.html">Services</a>
+            <a href="why.html" class="nav-link-special">Why Choose Me</a>
+            <a href="#contact" class="btn-primary">Let's Talk</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h2 class="subtitle animate-on-scroll animate-slide-up" style="transition-delay: 0.1s;">Turning vocal into visual</h2>
+            <h1 class="title animate-on-scroll animate-slide-up" style="transition-delay: 0.3s;">Your vision, edited to perfection<br>—built to grab attention and convert.</h1>
+            <a href="#work" class="btn-primary btn-large animate-on-scroll animate-slide-up" style="transition-delay: 0.5s;">Let's Go</a>
+        </div>
+        <div class="scroll-indicator">
+            <p>Scroll</p>
+            <div class="line"></div>
+        </div>
+    </section>
+
+    <!-- Work Section -->
+    <section class="work-section animate-on-scroll" id="work">
+        <div class="section-header animate-slide-up">
+            <h2>Featured Work</h2>
+            <p>Crafting visual experiences that perform.</p>
+        </div>
+        
+        <div class="work-grid">
+            <!-- Column 1: Showreel (16:9 Looping) -->
+            <div class="work-column animate-on-scroll animate-slide-right" style="transition-delay: 0.1s;">
+                <h3 class="col-title">Showreel</h3>
+                <div class="video-card landscape">
+                    <video src="assets/showreel.mp4" autoplay loop muted playsinline></video>
+                    <div class="video-overlay"><div class="play-icon"></div></div>
+                </div>
+            </div>
+
+            <!-- Column 2: Short Form Edits (9:16) -->
+            <div class="work-column animate-on-scroll animate-scale-up" style="transition-delay: 0.2s;">
+                <h3 class="col-title">Short Form</h3>
+                <div class="video-card portrait">
+                    <video src="assets/short1.mp4" autoplay loop muted playsinline></video>
+                    <div class="video-overlay"><div class="play-icon"></div></div>
+                </div>
+                <div class="video-card portrait">
+                    <video src="assets/short2.mp4" loop muted playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>
+                    <div class="video-overlay"><div class="play-icon"></div></div>
+                </div>
+                <div class="video-card portrait">
+                    <video src="assets/short3.mp4" loop muted playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>
+                    <div class="video-overlay"><div class="play-icon"></div></div>
+                </div>
+            </div>
+
+            <!-- Column 3: Long Form Edits (16:9) -->
+            <div class="work-column animate-on-scroll animate-slide-left" style="transition-delay: 0.3s;">
+                <h3 class="col-title">Long Form</h3>
+                <div class="video-card landscape">
+                    <video src="assets/long1.mp4" loop muted playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>
+                    <div class="video-overlay"><div class="play-icon"></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sharingan Divider -->
+    <div class="divider animate-on-scroll animate-fade-in">
+        <img src="assets/sharingan.png" alt="Sharingan" class="spinning-sharingan">
+    </div>
+
+    <!-- Contact Section -->
+    <section class="contact-section animate-on-scroll" id="contact">
+        <div class="contact-card glass-card animate-slide-up">
+            <h2>Ready to Elevate Your Visuals?</h2>
+            <p>Let's collaborate and make something extraordinary.</p>
+            
+            <div class="contact-links">
+                <a href="https://wa.me/7999731773" target="_blank" class="contact-btn whatsapp">
+                    <span class="icon">💬</span> Chat on WhatsApp
+                </a>
+                <a href="mailto:yjha019@gmail.com" class="contact-btn email">
+                    <span class="icon">✉️</span> yjha019@gmail.com
+                </a>
+                <a href="https://www.instagram.com/yugz.fx/" target="_blank" class="contact-btn instagram">
+                    <span class="icon">📸</span> @yugz.fx
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Yug. All rights reserved.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
