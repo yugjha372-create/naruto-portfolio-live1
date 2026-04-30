@@ -1,9 +1,5 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// YUG AI — Powered by Google Gemini
-// Replace GEMINI_API_KEY with your key from https://aistudio.google.com/app/apikey
-// ─────────────────────────────────────────────────────────────────────────────
-const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY_HERE';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+// Use the secure Vercel Serverless Function instead of a hardcoded key
+const CHAT_API_URL = '/api/chat';
 
 // ── SYSTEM PROMPT ─────────────────────────────────────────────────────────────
 const getSystemPrompt = (userMemory = {}) => {
@@ -159,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         };
 
-        const res = await fetch(GEMINI_URL, {
+        const res = await fetch(CHAT_API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
