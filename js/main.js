@@ -1,5 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // --- PRELOADER ---
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        const minLoadTime = 2500; // Match CSS animation duration
+        const hidePreloader = () => {
+            document.body.classList.add('loaded');
+        };
+        
+        setTimeout(() => {
+            if (document.readyState === 'complete') {
+                hidePreloader();
+            } else {
+                window.addEventListener('load', hidePreloader);
+            }
+        }, minLoadTime);
+    }
+
     // --- CUSTOM CURSOR ---
     const cursor = document.querySelector('.cursor');
     const follower = document.querySelector('.cursor-follower');

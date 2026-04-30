@@ -9,8 +9,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Vercel Speed Insights -->
+    <script>
+        window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
 </head>
 <body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loading-text">Awakening<span class="red-dot">...</span></div>
+        <div class="wave-loader-container">
+            <div class="wave-loader"></div>
+        </div>
+    </div>
+
     <!-- Custom Cursor -->
     <div class="cursor"></div>
     <div class="cursor-follower"></div>
@@ -37,7 +50,12 @@
         <div class="hero-content">
             <h2 class="subtitle animate-on-scroll animate-slide-up" style="transition-delay: 0.1s;">Turning vocal into visual</h2>
             <h1 class="title animate-on-scroll animate-slide-up" style="transition-delay: 0.3s;">Your vision, edited to perfection<br>—built to grab attention and convert.</h1>
-            <a href="#work" class="btn-primary btn-large animate-on-scroll animate-slide-up" style="transition-delay: 0.5s;">Let's Go</a>
+            <div class="hero-buttons animate-on-scroll animate-slide-up" style="transition-delay: 0.5s;">
+                <a href="#work" class="btn-primary btn-large">Let's Go</a>
+                <button id="open-ai-chat" class="btn-secondary btn-large">
+                    <span style="margin-right: 8px;">✨</span> Let's Talk AI
+                </button>
+            </div>
         </div>
         <div class="scroll-indicator">
             <p>Scroll</p>
@@ -65,17 +83,29 @@
             <!-- Column 2: Short Form Edits (9:16) -->
             <div class="work-column animate-on-scroll animate-scale-up" style="transition-delay: 0.2s;">
                 <h3 class="col-title">Short Form</h3>
-                <div class="video-card portrait">
-                    <video src="assets/short1.mp4" autoplay loop muted playsinline></video>
-                    <div class="video-overlay"><div class="play-icon"></div></div>
+                
+                <div class="scroll-now-indicator">
+                    <p>Scroll now</p>
+                    <div class="arrow-down-small"></div>
                 </div>
-                <div class="video-card portrait">
-                    <video src="assets/short2.mp4" loop muted playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>
-                    <div class="video-overlay"><div class="play-icon"></div></div>
-                </div>
-                <div class="video-card portrait">
-                    <video src="assets/short3.mp4" loop muted playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>
-                    <div class="video-overlay"><div class="play-icon"></div></div>
+
+                <div class="short-videos-grid">
+                    <div class="video-card portrait">
+                        <video src="assets/short1.mp4" autoplay loop muted playsinline></video>
+                        <div class="video-overlay"><div class="play-icon"></div></div>
+                    </div>
+                    <div class="video-card portrait">
+                        <video src="assets/VSL PRACTISE ANOTHER final.mp4" loop muted playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>
+                        <div class="video-overlay"><div class="play-icon"></div></div>
+                    </div>
+                    <div class="video-card portrait">
+                        <video src="assets/short2.mp4" loop muted playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>
+                        <div class="video-overlay"><div class="play-icon"></div></div>
+                    </div>
+                    <div class="video-card portrait">
+                        <video src="assets/short3.mp4" loop muted playsinline onmouseover="this.play()" onmouseout="this.pause()"></video>
+                        <div class="video-overlay"><div class="play-icon"></div></div>
+                    </div>
                 </div>
             </div>
 
@@ -115,10 +145,36 @@
         </div>
     </section>
 
+    <!-- AI Chatbot UI -->
+    <div id="ai-chatbot" class="ai-chatbot glass">
+        <div class="chat-header">
+            <div class="chat-title">
+                <span class="online-dot"></span>
+                Yug AI Assistant
+            </div>
+            <button id="close-ai-chat" class="close-btn">&times;</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message ai-message">
+                Namaste! Hello! I am Yug's AI assistant. I can answer your questions about video editing, prices, and Yug's amazing skills in English or Hindi. How can I help you today?
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <button id="mic-btn" class="mic-btn" title="Voice Input">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+            </button>
+            <input type="text" id="chat-input" placeholder="Ask about video editing..." autocomplete="off">
+            <button id="send-btn" class="send-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2026 Yug. All rights reserved.</p>
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/chatbot.js"></script>
 </body>
 </html>
