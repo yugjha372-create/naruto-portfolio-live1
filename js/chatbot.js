@@ -254,25 +254,19 @@ document.addEventListener('DOMContentLoaded', () => {
         showTyping();
 
         try {
-            if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
-                // No API key — use a smart local fallback with context awareness
-                await new Promise(r => setTimeout(r, 1200));
-                removeTyping();
-                const fallback = localSmartResponse(text, lang);
-                addMessage(fallback, true);
-                speak(fallback); // Automatically detects lang
-            } else {
-                const reply = await callGemini(text, lang);
-                removeTyping();
-                addMessage(reply, true);
-                speak(reply); // Automatically detects lang
-            }
+            // Always use Gemini for every response
+            const reply = await callGemini(text, lang);
+            removeTyping();
+            addMessage(reply, true);
+            speak(reply);
         } catch (err) {
             removeTyping();
-            console.error('Gemini API error:', err);
-            const fb = fallbackResponse(lang);
-            addMessage(fb, true);
-            speak(fb, lang);
+            console.error('Chatbot error:', err);
+            
+            // Fast local fallback ONLY if API is down/offline
+            const fallback = localSmartResponse(text, lang);
+            addMessage(fallback, true);
+            speak(fallback);
         } finally {
             chatInput.disabled = false;
             sendBtn.disabled = false;
