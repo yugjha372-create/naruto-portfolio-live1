@@ -1,13 +1,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// YUG AI — Focused Partner Engine v4.1
+// YUG AI — Focused Partner Engine v4.2
 // Focused on Yug, Video Editing, and Friendly Conversation
 // ─────────────────────────────────────────────────────────────────────────────
 const CHAT_API_URL = '/api/chat';
 
-// ── THE FOCUSED SYSTEM PROMPT ────────────────────────────────────────────────
 const getSystemPrompt = (mem = {}) => {
     const memStr = Object.keys(mem).length > 0 ? `\n[MEMORY]: ${JSON.stringify(mem)}` : '';
-    return `You are "Yug AI" ✨ — a friendly digital partner for Yug, a pro video editor.
+    return `You are "Yug AI" ✨ — a friendly digital partner for Yug, a professional video editor.
 
 CORE FOCUS:
 1. ABOUT YUG: Expert in VSLs, Reels, and Brand Films. Elite quality, high retention.
@@ -94,7 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         });
 
-        if (!res.ok) throw new Error(`API ${res.status}`);
+        if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.error || `API Error ${res.status}`);
+        }
 
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
@@ -128,7 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const copyBtn = document.createElement('button');
             copyBtn.className = 'copy-btn';
             copyBtn.innerHTML = '⎘ Copy';
-            copyBtn.onclick = () => { navigator.clipboard.writeText(fullText); copyBtn.innerHTML = '✓'; };
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(fullText);
+                copyBtn.innerHTML = '✓';
+                setTimeout(() => copyBtn.innerHTML = '⎘ Copy', 2000);
+            };
             msgEl.appendChild(copyBtn);
         }
 
@@ -154,7 +160,17 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             removeThinking();
             const errEl = createMessageEl(true);
-            errEl.querySelector('.msg-content').innerHTML = '⚠️ <strong>Connection Error:</strong> To make the AI work, you must deploy this site to <strong>Vercel</strong> and add your <strong>GEMINI_API_KEY</strong> in the Vercel Settings. It won\'t work on a local computer file.';
+            let errMsg = '⚠️ <strong>Connection Error:</strong> ';
+            
+            if (err.message.includes('API key')) {
+                errMsg += 'Your <strong>GEMINI_API_KEY</strong> is missing or incorrect in Vercel settings.';
+            } else if (location.protocol === 'file:') {
+                errMsg += 'The AI cannot work when opening the file locally. Please use your <strong>Vercel Live URL</strong>.';
+            } else {
+                errMsg += 'Something went wrong. Please check your Vercel logs or Redeploy the site.';
+            }
+            
+            errEl.querySelector('.msg-content').innerHTML = errMsg;
         } finally {
             chatInput.disabled = false;
             sendBtn.disabled = false;
