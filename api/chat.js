@@ -1,7 +1,7 @@
 export const config = { runtime: 'edge' };
 
 // Using the most stable high-end model
-const MODEL = 'gemini-1.5-pro';
+const MODEL = 'gemini-1.5-pro-latest';
 
 export default async function handler(req) {
     if (req.method !== 'POST') {
