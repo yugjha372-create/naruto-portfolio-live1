@@ -166,8 +166,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const errEl = createMessageEl(true);
             let errMsg = '⚠️ <strong>Connection Error:</strong> ';
             
-            if (err.message.includes('API key')) {
-                errMsg += 'Your <strong>GEMINI_API_KEY</strong> is missing or incorrect in Vercel settings.';
+            if (err.message.includes('API key') || err.message.includes('API_KEY')) {
+                errMsg += 'Your <strong>API_KEY</strong> is missing or incorrect in Vercel settings.';
             } else if (location.protocol === 'file:') {
                 errMsg += 'The AI cannot work when opening the file locally. Please use your <strong>Vercel Live URL</strong>.';
             } else {

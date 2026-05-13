@@ -1,50 +1,56 @@
 export const config = { runtime: 'edge' };
 
-// Using the most stable high-end model
-const MODEL = 'gemini-1.5-flash';
-
 export default async function handler(req) {
     if (req.method !== 'POST') {
         return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.DEEPSEEK_API_KEY || process.env.GEMINI_API_KEY || process.env.API_KEY;
     if (!apiKey) {
-        console.error("CRITICAL: GEMINI_API_KEY is missing from environment variables.");
-        return new Response(JSON.stringify({ error: 'API key not configured in Vercel. Please add GEMINI_API_KEY to your project settings.' }), { status: 500 });
+        return new Response(JSON.stringify({ error: 'API key not configured in Vercel.' }), { status: 500 });
     }
 
     try {
-        const { contents, system_instruction, generationConfig } = await req.json();
+        const { contents, system_instruction } = await req.json();
 
-        let geminiRes;
-        const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-pro-latest', 'gemini-pro'];
-        let usedModel = '';
-        let lastError = '';
-
-        for (const model of modelsToTry) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`;
-            geminiRes = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents,
-                    system_instruction,
-                    generationConfig: { temperature: 0.9, topP: 0.95, maxOutputTokens: 2048, ...generationConfig }
-                })
-            });
-
-            if (geminiRes.ok) {
-                usedModel = model;
-                break;
-            } else {
-                lastError = await geminiRes.text();
-                console.error(`Failed with model ${model}:`, lastError);
+        // Convert Gemini 'contents' format to OpenAI/DeepSeek 'messages' format
+        const messages = [];
+        
+        // Add system prompt if exists
+        if (system_instruction?.parts?.[0]?.text) {
+            messages.push({ role: 'system', content: system_instruction.parts[0].text });
+        }
+        
+        // Add conversation history
+        if (Array.isArray(contents)) {
+            for (const item of contents) {
+                const role = item.role === 'model' ? 'assistant' : 'user';
+                const content = item.parts?.[0]?.text || '';
+                if (content) {
+                    messages.push({ role, content });
+                }
             }
         }
 
-        if (!geminiRes || !geminiRes.ok) {
-            return new Response(JSON.stringify({ error: `All models failed. Last Error: ${lastError}` }), { status: 500 });
+        const deepseekRes = await fetch('https://api.deepseek.com/chat/completions', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: 'deepseek-chat',
+                messages: messages,
+                stream: true,
+                temperature: 0.9,
+                max_tokens: 2048
+            })
+        });
+
+        if (!deepseekRes.ok) {
+            const err = await deepseekRes.text();
+            console.error("API Error:", err);
+            return new Response(JSON.stringify({ error: `API Error: ${err}` }), { status: 500 });
         }
 
         const { readable, writable } = new TransformStream();
@@ -52,7 +58,7 @@ export default async function handler(req) {
         const encoder = new TextEncoder();
 
         (async () => {
-            const reader = geminiRes.body.getReader();
+            const reader = deepseekRes.body.getReader();
             const decoder = new TextDecoder();
             let buffer = '';
 
@@ -66,11 +72,16 @@ export default async function handler(req) {
                     buffer = lines.pop();
 
                     for (const line of lines) {
-                        if (line.startsWith('data: ')) {
+                        const trimmed = line.trim();
+                        if (trimmed.startsWith('data: ')) {
+                            const dataStr = trimmed.slice(6);
+                            if (dataStr === '[DONE]') continue;
+                            
                             try {
-                                const data = JSON.parse(line.slice(6));
-                                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                                const data = JSON.parse(dataStr);
+                                const text = data.choices?.[0]?.delta?.content;
                                 if (text) {
+                                    // Send it back in the format the frontend expects
                                     await writer.write(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
                                 }
                             } catch (e) {}
