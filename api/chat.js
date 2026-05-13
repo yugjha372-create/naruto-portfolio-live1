@@ -17,27 +17,34 @@ export default async function handler(req) {
     try {
         const { contents, system_instruction, generationConfig } = await req.json();
 
-        const GEMINI_STREAM_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent?alt=sse&key=${apiKey}`;
+        let geminiRes;
+        const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-pro-latest', 'gemini-pro'];
+        let usedModel = '';
+        let lastError = '';
 
-        const geminiRes = await fetch(GEMINI_STREAM_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents,
-                system_instruction,
-                generationConfig: {
-                    temperature: 0.9,
-                    topP: 0.95,
-                    maxOutputTokens: 2048,
-                    ...generationConfig
-                }
-            })
-        });
+        for (const model of modelsToTry) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`;
+            geminiRes = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents,
+                    system_instruction,
+                    generationConfig: { temperature: 0.9, topP: 0.95, maxOutputTokens: 2048, ...generationConfig }
+                })
+            });
 
-        if (!geminiRes.ok) {
-            const err = await geminiRes.text();
-            console.error("Gemini API Error:", err);
-            return new Response(JSON.stringify({ error: `Gemini Error: ${err}` }), { status: 500 });
+            if (geminiRes.ok) {
+                usedModel = model;
+                break;
+            } else {
+                lastError = await geminiRes.text();
+                console.error(`Failed with model ${model}:`, lastError);
+            }
+        }
+
+        if (!geminiRes || !geminiRes.ok) {
+            return new Response(JSON.stringify({ error: `All models failed. Last Error: ${lastError}` }), { status: 500 });
         }
 
         const { readable, writable } = new TransformStream();
