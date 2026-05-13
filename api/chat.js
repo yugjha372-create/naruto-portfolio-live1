@@ -5,7 +5,8 @@ export default async function handler(req) {
         return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
     }
 
-    const apiKey = process.env.DEEPSEEK_API_KEY || process.env.GEMINI_API_KEY || process.env.API_KEY;
+    // Since the Vercel variable Portfolio_API is "sk-...", it's a DeepSeek API key.
+    const apiKey = process.env.DEEPSEEK_API_KEY || process.env.Portfolio_API || process.env.API_KEY;
     if (!apiKey) {
         return new Response(JSON.stringify({ error: 'API key not configured in Vercel.' }), { status: 500 });
     }
@@ -13,7 +14,7 @@ export default async function handler(req) {
     try {
         const { contents, system_instruction } = await req.json();
 
-        // Convert Gemini 'contents' format to OpenAI/DeepSeek 'messages' format
+        // Convert Gemini 'contents' format from frontend to DeepSeek 'messages' format
         const messages = [];
         
         // Add system prompt if exists
@@ -81,7 +82,7 @@ export default async function handler(req) {
                                 const data = JSON.parse(dataStr);
                                 const text = data.choices?.[0]?.delta?.content;
                                 if (text) {
-                                    // Send it back in the format the frontend expects
+                                    // Send it back in the format the frontend expects!
                                     await writer.write(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
                                 }
                             } catch (e) {}
